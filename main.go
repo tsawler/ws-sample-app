@@ -5,6 +5,7 @@ import (
 	"github.com/tsawler/page"
 	"github.com/tsawler/toolbox"
 	"github.com/tsawler/ws"
+	"log"
 	"net/http"
 	"time"
 )
@@ -31,6 +32,9 @@ func main() {
 	fmt.Println("Starting websocket functionality...")
 	go app.ws.ListenToWsChannel()
 
+	// Listen for websocket errors
+	go app.listenToErrorChan()
+
 	go app.RandomString()
 
 	// start the web server
@@ -50,7 +54,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
 
+func (app *application) listenToErrorChan() {
+	for {
+		err := <-app.ws.ErrorChan
+		if err != nil {
+			// Do something with the error...
+			log.Printf("websocket error: %s", err.Error())
+		}
+	}
 }
 
 func (app *application) RandomString() {
