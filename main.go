@@ -32,9 +32,10 @@ func main() {
 	fmt.Println("Starting websocket functionality...")
 	go app.ws.ListenToWsChannel()
 
-	// Listen for websocket errors
+	// Listen for websocket errors.
 	go app.listenToErrorChan()
 
+	// Start a goroutine to send messages every 3 seconds.
 	go app.RandomString()
 
 	// start the web server
